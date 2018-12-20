@@ -1,28 +1,23 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { lazy } from 'react';
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import * as ROUTES from './constants/routes'
+import withAuthentication from './components/Auth/withAuthentication';
+import lazyComponent from './components/LazyComponent'
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
-}
+const LoginPage = lazyComponent(()=> import("./views/Login"));
+const RegisterPage = lazyComponent(()=> import("./views/Register"));
+const DashboardPage = lazyComponent(()=> import('./layouts/Dashboard'))
+const NotFoundPage = lazyComponent(()=> import('./views/NotFound'))
 
-export default App;
+const App = () => (
+  <Router>
+    <Switch>
+      <Route path={ROUTES.LANDING} exact component={DashboardPage} />
+      <Route path={ROUTES.LOGIN} component={LoginPage} />
+      <Route path={ROUTES.REGISTER} component={RegisterPage} />
+      <Route component={NotFoundPage} />
+    </Switch>
+  </Router>
+)
+
+export default withAuthentication(App);
